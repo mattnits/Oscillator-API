@@ -10,7 +10,6 @@ app.use(morgan('short'));
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.static(path.join(__dirname, '/public')));
-app.set('view engine', 'ejs');
 app.use('/', router);
 
 var server = app.listen(8000, function () {
