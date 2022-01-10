@@ -2,14 +2,27 @@ const { response } = require('express');
 const { token } = require('morgan');
 const request = require('request');
 const SpotifyWebApi = require('spotify-web-api-node');
-const config = require('../../../config.json');
+const aws = require('aws-sdk');
+// try {
+//     const config = require('../../../config.json');
+//     const clientID = config.ID;
+//     const clientSecret = config.Secret;
+//     var str = clientID + ':' + clientSecret;
+// } catch(err) {
+//     continue;
+// }
+
+
 
 
 exports.authorizeAccess = async function () {
     var token;
-    
-    const clientID = config.ID;
-    const clientSecret = config.Secret;
+    var s3 = new aws.S3({
+        clientID: process.env.clientID,
+        clientSecret: process.env.clientSecret
+    });
+    const clientID = s3.clientID;
+    const clientSecret = s3.clientSecret;
     var str = clientID + ':' + clientSecret;
     
     var authOptions = {
