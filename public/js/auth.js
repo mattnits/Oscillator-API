@@ -37,7 +37,13 @@ exports.authorizeAccess = async function () {
     };
 
     return new Promise(async function (resolve, reject) {
-        var token = await getAccess(authOptions);
+
+        try {
+            var token = await getAccess(authOptions);
+        } catch(err) {
+            reject(err);
+        }
+        
         console.log("AUTH: " + token);
         var spotifyApi = new SpotifyWebApi({
             clientId: clientID,
@@ -59,7 +65,7 @@ async function getAccess(authOptions) {
                 resolve(token);
             }
             else {
-                console.log("err: " + error);
+                console.log("Error (getAccess): " + error);
                 reject(error);
             }
         });

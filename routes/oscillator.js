@@ -18,28 +18,41 @@ router.get('/', (req, res) => {
 
 router.get('/search', async (req, res) => {
     var songQuery = "err";
-    var spotifyApi = await auth.authorizeAccess();
+    var spotifyApi = "err";
     var results;
 
     try {
-        if (req.body.song == undefined || req.body.artist == undefined) throw error
-
-        songQuery = await query.createQuery(req.body.song, req.body.artist);
+        spotifyApi = await auth.authorizeAccess();
     } catch(err) {
-        console.log("Error, invalid or missing song/artist data");
-    }
-
-    if (songQuery != "err") {
-        results = await query.querySongAPI(songQuery, spotifyApi);
-        res.status(200).send({
-            results
-        });
-    }
-    else {
         res.status(409).send({
-            "Error": "Error, invalid or missing song/artist data"
+            "Error": "Unable to connect to SpotifyAPI"
         });
     }
+    
+    if (spotifyApi != null) {
+        try {
+            if (req.body.song == undefined || req.body.artist == undefined) throw error
+    
+            songQuery = await query.createQuery(req.body.song, req.body.artist);
+        } catch(err) {
+            console.log("Error, invalid or missing song/artist data");
+        }
+    
+        if (songQuery == null) {
+            results = await query.querySongAPI(songQuery, spotifyApi);
+            res.status(200).send({
+                results
+            });
+        }
+        else {
+            res.status(409).send({
+                "Error": "Error, invalid or missing song/artist data"
+            });
+        }
+    }
+    
+
+    
 });
 
 router.get('/recommend', async (req, res) => {
