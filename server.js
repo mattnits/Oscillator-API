@@ -12,7 +12,9 @@ app.use(express.urlencoded());
 app.use(express.static(path.join(__dirname, '/public')));
 app.use('/', router);
 
-var server = app.listen(8000, function () {
+const PORT = process.env.PORT || 8000;
+
+var server = app.listen(PORT, function () {
 
     var host = server.address().address;
     var port = server.address().port;
