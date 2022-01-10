@@ -10,10 +10,9 @@ var client_id = '338b48faea544146bda3e79eb5b799ed';
 var redirect_uri = 'http://localhost:8888/callback';
 
 router.get('/', (req, res) => {
-    // res.status(200).send({
-    //     test: "PING!"
-    // });
-    res.send(req.body); // Sends returns whatever was in the json body that was sent
+    res.status(200).send({
+        test: "PING!"
+    });
 });
 
 
