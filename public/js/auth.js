@@ -11,17 +11,17 @@ exports.authorizeAccess = async function () {
     var str; 
 
     try {
+        const config = require('../../../config.json');
+        clientID = config.ID;
+        clientSecret = config.Secret;
+        str = clientID + ':' + clientSecret;
+    } catch(err) {
         var s3 = new aws.S3({
             clientID: process.env.clientID,
             clientSecret: process.env.clientSecret
         });
         clientID = s3.clientID;
         clientSecret = s3.clientSecret;
-        str = clientID + ':' + clientSecret;
-    } catch(err) {
-        const config = require('../../../config.json');
-        clientID = config.ID;
-        clientSecret = config.Secret;
         str = clientID + ':' + clientSecret;
     }
     

@@ -19,14 +19,18 @@ router.get('/search', async (req, res) => {
     var songQuery = "err";
     var spotifyApi = "err";
     var results;
+    var debugging;
 
 
     try {
         if (req.body.song == undefined || req.body.artist == undefined) throw new Error("invalid or missing song/artist data");
 
         spotifyApi = await auth.authorizeAccess();
+        debugging += "apiHit";
         songQuery = await query.createQuery(req.body.song, req.body.artist);
+        debugging += ":=:QueryHit";
         results = await query.querySongAPI(songQuery, spotifyApi);
+        debugging += ":=:ResultsHit";
 
         res.status(200).send({
             results
@@ -36,7 +40,8 @@ router.get('/search', async (req, res) => {
     } catch(err) {
         console.log(err);
         res.status(409).send({
-            "Error": err.message
+            "Error": err.message,
+            "Debug": debugging
         });
     }
     
