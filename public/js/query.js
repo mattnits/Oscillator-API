@@ -85,7 +85,6 @@ async function filterSongs(song, songFeats) {
         key = songFeats.key;
         tempo = Math.round(songFeats.tempo * 10) / 10
         mode = songFeats.mode;
-        console.log(song.artists[0].id);
 
         var newSong = new Song(songName, songID, artists, artistsID, albumImage, duration, key, tempo, mode);
         resolve(newSong);
