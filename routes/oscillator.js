@@ -5,9 +5,6 @@ const url = require('url');
 const auth = require("../public/js/auth.js");
 const query = require("../public/js/query.js");
 
-
-
-
 router.get('/', (req, res) => {
     res.status(200).send({
         test: "PING!"
@@ -21,13 +18,12 @@ router.get('/search', async (req, res) => {
     var results;
     var debugging = "start";
 
-
     try {
-        if (req.body.song == undefined || req.body.artist == undefined) throw new Error("invalid or missing song/artist data");
+        if (req.query.song == undefined || req.query.artist == undefined) throw new Error("invalid or missing song/artist data");
 
         spotifyApi = await auth.authorizeAccess();
         debugging += ":=:ApiHit";
-        songQuery = await query.createQuery(req.body.song, req.body.artist);
+        songQuery = await query.createQuery(req.query.song, req.query.artist);
         debugging += ":=:QueryHit";
         results = await query.querySongAPI(songQuery, spotifyApi);
         debugging += ":=:ResultsHit";
@@ -38,10 +34,18 @@ router.get('/search', async (req, res) => {
 
 
     } catch(err) {
-        res.status(409).send({
-            "Error": err,
-            "Debug": debugging
-        });
+        if (err.message != "") {
+            res.status(409).send({
+                "Error": err.message,
+                "Debug": debugging
+            });
+        } else {
+            res.status(409).send({
+                "Error": err,
+                "Debug": debugging
+            });
+        }
+        
     }
     
 
