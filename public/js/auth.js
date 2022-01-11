@@ -41,6 +41,9 @@ exports.authorizeAccess = async function () {
         try {
             var token = await getAccess(authOptions);
         } catch(err) {
+            if (err == undefined) {
+                reject("(authAccess) Unable to connect to Spotify API. ID: " + clientID);
+            }
             reject(err + clientID);
         }
         
@@ -65,7 +68,7 @@ async function getAccess(authOptions) {
             }
             else {
                 console.log("Error (getAccess): " + error);
-                reject("Unable to connect to Spotify API. ID: ");
+                reject("(getAccess) Unable to connect to Spotify API. ID: ");
             }
         });
     });

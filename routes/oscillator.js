@@ -41,8 +41,7 @@ router.get('/search', async (req, res) => {
         console.log(err);
         res.status(409).send({
             "Error": err.message,
-            "Debug": debugging,
-            "Test": "Test"
+            "Debug": debugging
         });
     }
     
