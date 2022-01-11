@@ -38,12 +38,6 @@ router.get('/search', async (req, res) => {
 
 
     } catch(err) {
-        if (err == undefined) {
-            res.status(408).send({
-                "Error": err,
-                "Debug": debugging
-            });
-        }
         res.status(409).send({
             "Error": err,
             "Debug": debugging

@@ -16,12 +16,8 @@ exports.authorizeAccess = async function () {
         clientSecret = config.Secret;
         str = clientID + ':' + clientSecret;
     } catch(err) {
-        var s3 = new aws.S3({
-            clientID: process.env.clientID,
-            clientSecret: process.env.clientSecret
-        });
-        clientID = s3.clientID;
-        clientSecret = s3.clientSecret;
+        clientID = process.env.clientID;
+        clientSecret = process.env.clientSecret;
         str = clientID + ':' + clientSecret;
     }
     
@@ -41,9 +37,6 @@ exports.authorizeAccess = async function () {
         try {
             var token = await getAccess(authOptions);
         } catch(err) {
-            if (err == undefined) {
-                reject("(authAccess) Unable to connect to Spotify API. ID: " + clientID);
-            }
             reject(err + clientID);
         }
         
@@ -68,7 +61,7 @@ async function getAccess(authOptions) {
             }
             else {
                 console.log("Error (getAccess): " + error);
-                reject("(getAccess) Unable to connect to Spotify API. ID: ");
+                reject("Unable to connect to Spotify API. ID: ");
             }
         });
     });
