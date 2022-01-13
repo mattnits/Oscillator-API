@@ -87,7 +87,6 @@ async function getAudioFeatures(spotifyApi, songInfo) {
 
 async function filterSongs(song, songFeats) {
     var songName, songID, artists = [], artistsID = [], albumImage, duration, key, tempo, mode;
-    console.log(query);
     return new Promise(function (resolve, reject) {
         albumImage = song.album.images[0].url;
 
