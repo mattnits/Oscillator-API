@@ -37,11 +37,26 @@ exports.querySongAPI = async function (queryString, spotifyApi) {
     });
 }
 
-exports.queryRecommendationAPI = async function(spotifyApi, songID, artistID) {
+exports.queryRecommendationAPI = async function(spotifyApi, songID, artistID, key, bpm) {
+    var sID = "", aID = "", recQuery, songArray = [];
+
+    if (songID != undefined) sID = songID;
+    if (artistID != undefined) aID = artistID;
+
     return new Promise(async function (resolve, reject) {
-        
-        
-        resolve();
+        try {
+            recQuery = await buildRecommendationQuery(songID, artistID, key, bpm);
+            songInfo = await getRecommendations(spotifyApi, recQuery);
+
+            for (i = 0; i < songInfo.length; i++) {
+                var songFeats = await getAudioFeatures(spotifyApi, songInfo[i]);
+                var newSong = await filterSongs(songInfo[i], songFeats);
+                songArray.push(newSong); 
+            }
+            resolve(songArray);
+        } catch(err) {
+            reject(err);
+        }
     });
 }
 
@@ -94,16 +109,50 @@ async function filterSongs(song, songFeats) {
 
 
 
-async function getRecommendation() {
-    spotifyApi.getRecommendations({
-            min_energy: 0.4,
-            seed_artists: ['6mfK6Q2tzLMEchAr0e9Uzu', '4DYFVNKZ1uixa6SQTvzQwJ'],
-            min_popularity: 50
-        })
+async function getRecommendations(spotifyApi, recQuery) {
+
+    return new Promise(function (resolve, reject) {
+        spotifyApi.getRecommendations(recQuery)
         .then(function(data) {
-            var recommendations = data.body;
-            console.log(recommendations);
+            resolve(data.body.tracks);
         }, function(err) {
-            console.log("Something went wrong!", err);
+            reject("Problem obtaining recommendations from Spotify API");
+    });
+
+
+    });
+    
+}
+
+async function buildRecommendationQuery(songID = null, artistID, key = null, bpm = null) {
+    var target_key = null, target_tempo = null, seed_song = [songID], seed_artists = [artistID];
+    var query = {};
+
+
+    if (key != null && key != undefined) {
+        target_key = parseInt(key);
+    }
+    if (bpm != null && bpm != undefined) {
+        target_tempo = parseInt(bpm);
+    }
+
+    query = await addToQuery(query, "seed_song", seed_song);
+    query = await addToQuery(query, "seed_artists", seed_artists);
+    query = await addToQuery(query, "target_key", target_key);
+    query = await addToQuery(query, "target_tempo", target_tempo);
+
+    return new Promise(function (resolve, reject) {
+        resolve(query);
+    });
+
+}
+
+async function addToQuery(query, identifier, value) {
+    if (value != null) {
+        query[identifier] = value;
+    }
+
+    return new Promise(function (resolve, reject) {
+        resolve(query);
     });
 }

@@ -32,7 +32,6 @@ router.get('/search', async (req, res) => {
             results
         });
 
-
     } catch(err) {
         if (err.message != "") {
             res.status(409).send({
@@ -47,21 +46,33 @@ router.get('/search', async (req, res) => {
         }
         
     }
-    
 
-    
 });
 
 router.get('/recommend', async (req, res) => {
-    var spotifyApi = await auth.authorizeAccess();
     var results;
+    var spotifyApi;
 
     try {
-        if (req.body.songID == undefined || req.body.artistID == undefined) throw error
+        if (req.query.artistID == undefined) throw new Error("ArtistID must be defined!");
 
-        results = await query.queryRecommendationAPI(spotifyApi, req.body.songID, req.body.artistID);
+        spotifyApi = await auth.authorizeAccess();
+        results = await query.queryRecommendationAPI(spotifyApi, req.query.songID, req.query.artistID, req.query.key, req.query.bpm);
+        res.status(200).send({
+            results
+        });
     } catch(err) {
-        // console.log("Error, invalid or missing song/artist data");
+        if (err.message != undefined) {
+            res.status(409).send({
+                "Error": err.message,
+                "Debug": "test"
+            });
+        } else {
+            res.status(409).send({
+                "Error": err,
+                "Debug": "Test"
+            });
+        }
     }
 });
 
