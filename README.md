@@ -1,5 +1,5 @@
 # Oscillator-API
-Current Version (0.1) **Still in Production/Testing**  
+Current Version (1.0) 
  This API is designed on top of the [Spotify Web Api](https://developer.spotify.com/discover/) and allows users to quickly
 query songs and get recommendations based off of those queries. The API's design was intended for DJ's so that they could
 find tracks to mix based on key and tempo however it can provide many different uses for anyone.
